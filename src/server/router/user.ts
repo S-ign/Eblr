@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react"
 import { createRouter } from "./context";
 import { z } from "zod";
 
@@ -19,7 +20,7 @@ export const userRouter = createRouter()
         email: z.string(),
       }),
     async resolve({ ctx, input }) {
-      const user =  await ctx.prisma.user.findUnique({
+      const user =  await ctx.prisma.user.findUniqueOrThrow({
         where: {
           email: input.email
         }

@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from '../components/Modal'
 
-const ContentToolbox = (props) => {
+const ContentToolbox = (props: {name: string, email: string}) => {
   const [showModal, setShowModal] = React.useState<boolean>(false);
 
   return (
@@ -67,7 +67,7 @@ const ContentToolbox = (props) => {
         </div>
         <p>Video</p>
       </div>
-      <Modal name={props.name} showModal={showModal} setShowModal={setShowModal}/>
+      <Modal email={props.email} name={props.name} showModal={showModal} setShowModal={setShowModal}/>
     </div>
   )
 }

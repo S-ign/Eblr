@@ -7,7 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 import Link from 'next/link'
 
-const Nav = (props) => {
+const Nav = (props: { name: string}) => {
   return (
     <div>
       {

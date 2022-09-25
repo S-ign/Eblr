@@ -1,33 +1,29 @@
 import React from 'react'
 import { trpc } from "../utils/trpc";
-import { useSession } from "next-auth/react"
 
 type ModalProps = {
+  name: string
+  email: string
   showModal: boolean
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
-  const { data: session } = useSession()
-
-  let email = ''
-  if (session) {
-    email = session.user.email
-  }
-
   const [postTitle, setPostTitle] = React.useState<string>('')
   const [postContent, setPostContent] = React.useState<string>('')
   const [postTags, setPostTags] = React.useState<string>('')
 
-  const titleHandler = (e: any) => {
-    setPostTitle(e.target.value)
+  const titleHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostTitle(event.target.value)
   }
-  const contentHandler = (e: any) => {
-    setPostContent(e.target.value)
+  const contentHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostContent(event.target.value)
   }
-  const tagsHandler = (e: any) => {
-    setPostTags(e.target.value)
+  const tagsHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostTags(event.target.value)
   }
+
+  const {data: authorId } = trpc.useQuery(["user.getAuthorId", {email: props.email}]);
 
   const {mutate} = trpc.useMutation("post.createPost")
 
@@ -36,7 +32,8 @@ const Modal: React.FC<ModalProps> = (props) => {
     mutate({
       title: postTitle,
       content: postContent,
-      tags: postTags
+      tags: postTags,
+      authorId: authorId!,
     })
     props.setShowModal(false)
   }
@@ -76,8 +73,8 @@ const Modal: React.FC<ModalProps> = (props) => {
                   <textarea onChange={contentHandler} className="flex text-md w-full border-none overflow-auto focus:overflow-auto outline-none resize-none" id="" name="" cols={30} rows={3} placeholder="Go ahead, put anything."></textarea>
                 </div>
 
-                <div onChange={tagsHandler} className="flex-auto grow p-6 w-full">
-                  <textarea className="flex-auto grow w-full overflow-hidden focus:outline-none resize-none" maxLength={139} placeholder="#add tags"></textarea>
+                <div className="flex-auto grow p-6 w-full">
+                  <textarea onChange={tagsHandler} className="flex-auto grow w-full overflow-hidden focus:outline-none resize-none" maxLength={139} placeholder="#add tags"></textarea>
                 </div>
 
                 {/*footer*/}

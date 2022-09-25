@@ -14,13 +14,15 @@ const Home: NextPage = () => {
 
   const { data: session } = useSession()
 
-  let email = ''
   let name = ''
-
-  if (session) {
-    email = session.user.email
-    name = session.user.name
+  let email = ''
+  if (session !== undefined && session !== null) {
+    if (session.user !== undefined && session !== null) {
+      name = session.user.name!
+      email = session.user.email!
+    }
   }
+
   const {data: userPosts } = trpc.useQuery(["user.getUserPosts", {email: email}]);
 
   return (
@@ -31,14 +33,22 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container">
-        <Nav name={name}/>
-        <div className="flex grow h-screen w-screen justify-center gap-6 pt-8 bg-eblr-blue">
+      <main>
+        {
+          (name)
+            ? <Nav name={name}/>
+            : <Nav name={""}/>
+        }
+        <div className="flex grow h-full w-screen justify-center gap-6 pt-8 bg-eblr-blue">
           <div className="flex">
             <picture><img className="rounded-md" src={defaultProfile.src} alt="" /></picture>
           </div>
           <div className="flex gap-5 flex-col">
-            <ContentToolbox name={name}/>
+            {
+              (name && email)
+                ? <ContentToolbox email={email} name={name}/>
+                : <ContentToolbox email={""} name={""}/>
+            }
             <Categories />
             {
               userPosts

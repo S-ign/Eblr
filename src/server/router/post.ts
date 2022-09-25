@@ -33,15 +33,15 @@ export const postRouter = createRouter()
       title: z.string(),
       content: z.string(),
       tags: z.string(),
+      authorId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const { data: id } = trpc.useQuery(["user.getAuthorId", {email: ctx.session.user.email}])
       return await ctx.prisma.post.create({
         data: {
           title: input.title,
           content: input.content,
           tags: input.tags,
-          authorId: id
+          authorId: input.authorId
         }
       })
     },
